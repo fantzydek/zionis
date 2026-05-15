@@ -1,2 +1,0 @@
-# zionis
-apa aja
