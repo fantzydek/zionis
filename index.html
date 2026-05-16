@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zionis - Neubrutalism Real-Time</title>
+    <title>Zionis - Neubrutalism Real-Time Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Panggil CSS Kita -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,10 +14,7 @@
     <div id="authScreen">
         <div class="auth-container">
             <div class="auth-header">
-                <div class="auth-logo">
-                    <div class="auth-icon"><i class="fas fa-bolt"></i></div>
-                    <div class="auth-title">ZION<span>IS</span></div>
-                </div>
+                <div class="auth-logo"><div class="auth-icon"><i class="fas fa-bolt"></i></div><div class="auth-title">ZION<span>IS</span></div></div>
                 <p class="auth-subtitle" id="authSubtitle">Masuk ke dashboard sekarang</p>
             </div>
             <div class="auth-card">
@@ -35,6 +31,106 @@
                     <button type="submit" class="btn-auth" style="background: var(--accent-yellow);"><i class="fas fa-rocket"></i> Daftar Akun</button>
                     <div class="auth-switch">Sudah punya akun? <a onclick="toggleAuth('login')">Masuk di sini</a></div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP SHELL -->
+    <div id="appShell">
+        <div class="app-layout">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-brand"><div class="brand-icon"><i class="fas fa-bolt"></i></div><div class="brand-text">ZION<span>IS</span></div></div>
+                <nav class="sidebar-nav" id="sidebarNav"></nav>
+                <div class="sidebar-footer">
+                    <div class="user-card">
+                        <div class="user-avatar" id="sidebarAvatar">Z</div>
+                        <div class="user-info"><h4 id="sidebarName">User</h4><span id="sidebarRole">Member</span></div>
+                        <button class="btn-logout" onclick="handleLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <header class="topbar">
+                    <div class="topbar-left">
+                        <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+                        <div class="topbar-title"><h2 id="pageTitle">Dashboard</h2><p id="pageDesc">Real-time overview</p></div>
+                    </div>
+                    <div class="topbar-right" id="topbarRight"></div>
+                </header>
+
+                <div class="content-area">
+                    <!-- DASHBOARD -->
+                    <div id="page-dashboard" class="page active">
+                        <div class="stats-grid" id="dashboardStats"></div>
+                        <div class="grid-2">
+                            <div class="card"><div class="card-header"><h3><i class="fas fa-chart-bar"></i> Revenue</h3></div><div class="card-body"><div class="chart-container" id="revenueChart"></div></div></div>
+                            <div class="card"><div class="card-header"><h3><i class="fas fa-bolt"></i> System Status</h3></div><div class="card-body"><div style="padding:15px 0;border-bottom:3px solid #000;font-weight:700;"><i class="fas fa-check-circle" style="color:var(--accent-cyan)"></i> Real-Time Active<br><span style="font-size:11px;color:var(--text-muted)">Socket.io Connected</span></div></div></div>
+                        </div>
+                    </div>
+
+                    <!-- PEMASUKAN HARIAN (ADMIN ONLY) -->
+                    <div id="page-income" class="page">
+                        <div class="card">
+                            <div class="card-header"><h3><i class="fas fa-cash-register"></i> Pemasukan Harian (Admin)</h3></div>
+                            <div class="card-body" style="padding:0;">
+                                <div id="incomeList" style="max-height: 500px; overflow-y: auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCTS -->
+                    <div id="page-products" class="page">
+                        <div class="catalog-tabs" id="productTabs"></div>
+                        <div id="productCatalog"></div>
+                    </div>
+
+                    <!-- MY ORDERS -->
+                    <div id="page-orders" class="page">
+                        <div class="card"><div class="card-header"><h3><i class="fas fa-inbox"></i> Riwayat & Tracking Order</h3></div><div class="card-body" style="padding:0;" id="orderListWrapper"></div></div>
+                    </div>
+
+                    <!-- CONTACT -->
+                    <div id="page-contact" class="page">
+                        <div class="card">
+                            <div class="card-header"><h3><i class="fas fa-headset"></i> Hubungi Admin</h3></div>
+                            <div class="card-body">
+                                <p style="margin-bottom: 20px; font-weight: 600; color: var(--text-muted);">Jika ada kendala dengan pembayaran atau pengiriman akun, silakan hubungi kontak di bawah ini:</p>
+                                <div style="display: flex; flex-direction: column; gap: 15px;">
+                                    <a href="https://t.me/Fantzy_Reals13" target="_blank" class="btn-auth" style="background: #0088cc; text-decoration: none; display: flex;"><i class="fab fa-telegram"></i> Chat Telegram</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL: CART -->
+    <div id="cartModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-head"><h2><i class="fas fa-shopping-cart"></i> Checkout</h2><button class="modal-close" onclick="closeModal('cartModal')"><i class="fas fa-times"></i></button></div>
+            <div class="modal-body">
+                <div id="cartItemsList"></div>
+                <div style="display:flex; justify-content:space-between; margin:25px 0; font-weight:800; font-size:20px; border-top:4px solid #000; padding-top:15px;"><span>Total Bayar</span><span id="cartTotal">Rp 0</span></div>
+                <form id="checkoutForm" onsubmit="processPayment(event)">
+                    <div class="form-group"><label>Username Akun Tujuan</label><div class="input-box"><input type="text" id="checkoutAccUser" class="form-input" placeholder="Masukkan username" required><i class="fas fa-user"></i></div></div>
+                    <div class="form-group"><label>Password Akun Tujuan</label><div class="input-box"><input type="text" id="checkoutAccPass" class="form-input" placeholder="Masukkan password" required><i class="fas fa-lock"></i></div></div>
+                    <button type="submit" id="payBtn" class="btn-auth" style="background: var(--accent-yellow);"><i class="fas fa-wallet"></i> Bayar via QRIS</button>
+                </form>
+                <div id="qrisBox" class="qris-box"><p style="font-weight:800; margin-bottom:15px; color:#000;">Scan QRIS di bawah ini:</p><img id="qrisImg" src="" alt="QRIS"><div style="color:#000; font-weight:800; margin-top:15px;" id="pollingStatus"><i class="fas fa-spinner fa-spin"></i> Menunggu pembayaran...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastBox"></div>
+
+    <!-- SOCKET.IO SCRIPT (PASTIKAN INI MENUNJUK KE BACKEND ANDA) -->
+    <script src="http://panelkuy.jscloud.my.id:2006/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+    </html>                </form>
             </div>
         </div>
     </div>
