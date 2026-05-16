@@ -251,7 +251,11 @@
     <script src="http://panelkuy.jscloud.my.id:2006/socket.io/socket.io.js"></script>
     
     <script>
-        const API_BASE_URL = 'http://panelkuy.jscloud.my.id:2006/api';
+                // FIX: Deteksi otomatis apakah web dibuka di HTTP atau HTTPS
+        const currentProtocol = window.location.protocol; 
+        
+        // FIX: Pakai protokol yang sama dengan webnya. Kalau web HTTPS, API juga HTTPS
+        const API_BASE_URL = currentProtocol + '//panelkuy.jscloud.my.id:2006/api';
         const API_KEY = 'fp_ao260annzpk1jk9lx';
 
         let currentUser = null; 
@@ -263,12 +267,13 @@
         
         let socket;
         try {
-            socket = io('http://panelkuy.jscloud.my.id:2006', { reconnectionAttempts: 3 }); 
+            // FIX: Socket.io juga harus pakai protokol yang sama
+            const socketUrl = currentProtocol + '//panelkuy.jscloud.my.id:2006';
+            socket = io(socketUrl, { reconnectionAttempts: 3 }); 
         } catch(e) {
             console.error("Socket.io failed to load, realtime features disabled.");
             socket = { on: ()=>{}, emit: ()=>{}, connect: ()=>{}, disconnect: ()=>{} };
         }
-
         // ==========================================
         // AUTH SYSTEM
         // ==========================================
